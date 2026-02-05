@@ -17,13 +17,11 @@ export default function App() {
   function onSelect(movie: Movie) {
     setSelectedMovie(movie);
     document.body.style.overflow = 'hidden';
-    document.documentElement.style.overflow = 'hidden';
   }
 
   function onClose() {
     setSelectedMovie(null);
     document.body.style.overflow = 'auto';
-    document.documentElement.style.overflow = 'auto';
   }
 
   async function handleSubmit(query: string) {
