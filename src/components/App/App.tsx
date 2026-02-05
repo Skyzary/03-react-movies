@@ -11,6 +11,7 @@ import ErrorMessage from '../ErrorMessage/ErrorMessage';
 
 export default function App() {
   const [showModal, setShowModal] = useState(false);
+  const [query, setQuery] = useState('');
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [loading, setLoading] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -24,6 +25,7 @@ export default function App() {
   }
 
   async function handleSubmit(query: string) {
+    setQuery(query);
     setLoading(true);
     const movies = await fetchMovies(query);
     if (movies.length === 0) {
@@ -40,7 +42,7 @@ export default function App() {
       <Toaster position="top-center" />
       <SearchBar onSubmit={handleSubmit} />
       {loading && <Loader />}
-      {movies.length === 0 && <ErrorMessage />}
+      {movies.length === 0 && !loading && query && <ErrorMessage />}
 
       {movies.length > 0 && <MovieGrid movies={movies} onSelect={onSelect} />}
       {showModal && selectedMovie && (
