@@ -18,10 +18,13 @@ export default function App() {
   function onSelect(movie: Movie) {
     setSelectedMovie(movie);
     setShowModal(true);
+    document.body.style.overflow = 'hidden';
   }
 
   function onClose() {
     setShowModal(false);
+    setSelectedMovie(null);
+    document.body.style.overflow = 'auto';
   }
 
   async function handleSubmit(query: string) {
