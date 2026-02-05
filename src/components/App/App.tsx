@@ -10,33 +10,35 @@ import MovieModal from '../MovieModal/MovieModal';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 
 export default function App() {
-  const [showModal, setShowModal] = useState(false);
-  const [query, setQuery] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [loading, setLoading] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
   function onSelect(movie: Movie) {
     setSelectedMovie(movie);
-    setShowModal(true);
     document.body.style.overflow = 'hidden';
   }
 
   function onClose() {
-    setShowModal(false);
     setSelectedMovie(null);
     document.body.style.overflow = 'auto';
   }
 
   async function handleSubmit(query: string) {
-    setQuery(query);
     setLoading(true);
-    const movies = await fetchMovies(query);
-    if (movies.length === 0) {
+    setErrorMessage(null); // Очищаем предыдущие ошибки
+    try {
+      const movies = await fetchMovies(query);
+      if (movies.length === 0) {
+        setLoading(false);
+        setMovies([]);
+      } else {
+        setMovies(movies);
+        setLoading(false);
+      }
+    } catch (e: any) {
+      setErrorMessage(e.message || 'Something went wrong');
       setLoading(false);
-      setMovies([]);
-    } else {
-      setLoading(false);
-      setMovies(movies);
     }
   }
 
@@ -45,12 +47,10 @@ export default function App() {
       <Toaster position="top-center" />
       <SearchBar onSubmit={handleSubmit} />
       {loading && <Loader />}
-      {movies.length === 0 && !loading && query && <ErrorMessage />}
 
       {movies.length > 0 && <MovieGrid movies={movies} onSelect={onSelect} />}
-      {showModal && selectedMovie && (
-        <MovieModal movie={selectedMovie} onClose={onClose} />
-      )}
+      {selectedMovie && <MovieModal movie={selectedMovie} onClose={onClose} />}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
     </div>
   );
 }

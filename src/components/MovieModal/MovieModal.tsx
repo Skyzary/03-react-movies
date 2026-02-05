@@ -1,6 +1,6 @@
 import css from './MovieModal.module.css';
 import type { Movie } from '../../types/movie';
-import { createPortal } from 'react-dom';
+import { createPortal } from 'react-dom'; //
 import { useEffect, type MouseEvent } from 'react';
 
 interface MovieModalProps {
